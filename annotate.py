@@ -17,8 +17,12 @@ def find_marked_terms(sentence, mark='[NEGATED]'):
 
     return marked_terms
 
-def get_patients_annotated_terms(unique_terms, df_to_annotate,
-                               negex_triggers_text_filepath = './negex/python/negex_triggers.txt'):
+def get_patients_annotated_terms(unique_terms, 
+                                 df_to_annotate,
+                                 negex_triggers_text_filepath = './negex/python/negex_triggers.txt'):
+    """
+    
+    """
     
     rfile = open(negex_triggers_text_filepath)
     irules = sortRules(rfile.readlines())

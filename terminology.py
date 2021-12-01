@@ -8,11 +8,11 @@ from helper import choose_label
 path = 'data_pool/'
 
 
-def obtain_terminologies(terminologies = ["ICD9", "SNOMEDCT_US", "RXNORM", "NDFRT"], 
+def obtain_lexicons(terminologies = ["ICD9", "SNOMEDCT_US", "RXNORM", "NDF"], 
                          hdo = True, 
                          additional_from_negex=True):
     """
-    
+    read more from: https://owlready2.readthedocs.io/en/latest/pymedtermino2.html
     """
     
     import_umls("umls-2021AB-full.zip", terminologies = terminologies)
@@ -21,15 +21,12 @@ def obtain_terminologies(terminologies = ["ICD9", "SNOMEDCT_US", "RXNORM", "NDFR
     PYM_classes_list = list(PYM.classes())
 
     terms = []
-    for i in range(len(PYM_classes_list)):
-        str_class_selected = str(PYM_classes_list[i])
-        if '#' in str_class_selected:
-            strings_selected = str_class_selected[str_class_selected.index('#')+2:-1].replace(' ; ',';').split('; ')
-            end_selection = []
-            for strings in strings_selected:
-                end_selection.extend(strings.split(';'))
-            terms.extend(end_selection)
-
+    for i, PYM_class in enumerate(PYM_classes_list):
+        labels = PYM_class.label
+        if len(labels) > 0:
+            for label in labels:
+                terms.append(label)
+                
     unique_terms = list(set(terms))
     while '' in unique_terms:
         unique_terms.pop(unique_terms.index(''))
@@ -44,11 +41,12 @@ def obtain_terminologies(terminologies = ["ICD9", "SNOMEDCT_US", "RXNORM", "NDFR
 
         hdo_unique_terms = list(set(df_hdo_selected[~df_hdo_selected['processed_label'].isna()].processed_label.tolist()))
 
-        ### Combining them all together
+        ### Combine them all together
         unique_terms = list(set(unique_terms + hdo_unique_terms))
         
     if additional_from_negex:
-        print('Obtaining Negex samples' Concept)
+        ### Samples from Negex github
+        print('Obtaining Negex samples\' Concept')
         patients_clinical_reports_text_filepath = './negex/python/Annotations-1-120.txt'
         df = pd.read_csv(patients_clinical_reports_text_filepath, delimiter='\t')
         

@@ -1,4 +1,5 @@
-from transformers import LongformerConfig, LongformerForSequenceClassification, LongformerTokenizer, LongformerSelfAttention
+from transformers import ElectraConfig, RobertaConfig, ElectraTokenizerFast, RobertaTokenizer
+from transformers import LongformerConfig, LongformerForSequenceClassification, LongformerTokenizer
 
 
 def convert_roberta_like_to_longformer(state_dict, model_name):
@@ -32,7 +33,7 @@ class LongBioLMModel():
         self.config.attention_window = attention_window
         self.config.max_position_embeddings = self.config.max_position_embeddings * 8
         
-        self.tokenizer = LongformerTokenizer.from_pretrained(model_path)
+        self.tokenizer = RobertaTokenizer.from_pretrained(model_path)
         self.model = LongformerForSequenceClassification(config=self.config)
         
         state_dict = convert_roberta_like_to_longformer(self.model.state_dict(), 'roberta')
@@ -55,7 +56,7 @@ class LongBioELECTRAModel():
         self.config.attention_window = attention_window
         self.config.max_position_embeddings = self.config.max_position_embeddings * 8
         
-        self.tokenizer = LongformerTokenizer.from_pretrained(model_path)
+        self.tokenizer = ElectraTokenizerFast.from_pretrained(model_path)
         self.model = LongformerForSequenceClassification(config=self.config)
         
         state_dict = convert_roberta_like_to_longformer(self.model.state_dict(), 'electra')

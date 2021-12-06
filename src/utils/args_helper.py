@@ -46,7 +46,7 @@ class DataTrainingArguments:
         metadata = {
             'help':'To select whether the training will include text only data,'
                    'or text and tabular data',
-            'choices':['text', 'text_tabular']}
+            'choices':['text', 'text_tabular', 'short_dataset_1', 'long_mixed_dataset_1']}
     )
     truncation_clinical_note_len: int = field(
         default = 999999,

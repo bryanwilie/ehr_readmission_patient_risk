@@ -26,9 +26,9 @@ import wandb
 
 from src.data_utils.biodataset import BioDataset
 from src.modules.trainer import MultilabelTrainer
+from src.utils.load_dataset import load_tokenized_dataset
 from src.utils.load_model import load_model_and_tokenizer
 from src.utils.args_helper import DataTrainingArguments, ModelArguments, EHRTrainingArguments
-
 
 
 def main(model_args, data_args, training_args):
@@ -37,10 +37,7 @@ def main(model_args, data_args, training_args):
     model, tokenizer = load_model_and_tokenizer(model_args)
     
     # Dataset
-    sentence = "The quick brown fox jumps over the lazy dog"
-    labels = [[0, 1, 2],[0, 2, 1]]
-    
-    encodings = tokenizer([sentence, sentence], return_tensors="pt")
+    encodings, labels = load_tokenized_dataset(data_args, tokenizer)
 
     train_dataset = BioDataset(encodings, labels)
     val_dataset = BioDataset(encodings, labels)

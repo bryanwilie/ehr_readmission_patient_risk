@@ -10,10 +10,9 @@ class BioELECTRAModel(nn.Module):
         self.config.num_multi_labels = num_multi_labels
         
         self.tokenizer = ElectraTokenizerFast.from_pretrained(model_path)
-#         self.model = ElectraForSequenceClassification.from_pretrained(
-#                         model_path,
-#                         config=self.config)
-        self.model = ElectraForSequenceClassification(config=self.config)
+        self.model = ElectraForSequenceClassification.from_pretrained(
+                        model_path,
+                        config=self.config)
                 
     def forward(self, inputs):
         print(inputs)

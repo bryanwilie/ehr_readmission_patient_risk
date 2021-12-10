@@ -25,7 +25,7 @@ from transformers import (
 )
 
 from src.data_utils import BioDataset, EHRDataset, EHREpisodeDataset
-from src.modules.trainer import MultilabelTrainer
+from src.modules.multi_label_trainer import MultilabelTrainer
 from src.utils.load_dataset import load_tokenized_dataset
 from src.utils.load_model import load_model_and_tokenizer
 from src.utils.args_helper import DataTrainingArguments, ModelArguments, EHRTrainingArguments
@@ -45,9 +45,9 @@ def main(model_args, data_args, training_args):
     test_patient_id_list = json.load(open(data_args.test_path,'r'))
 
     ## Instantiate dataset
-    train_dataset = EHREpisodeDataset(data_args.patient_base_path, train_patient_id_list, tokenizer, data_args.max_text_len, data_args.max_duration, use_tabular=data_args.data_type=='text_tabular')
-    valid_dataset = EHREpisodeDataset(data_args.patient_base_path, valid_patient_id_list, tokenizer, data_args.max_text_len, data_args.max_duration, use_tabular=data_args.data_type=='text_tabular')
-    test_dataset = EHREpisodeDataset(data_args.patient_base_path, test_patient_id_list, tokenizer, data_args.max_text_len, data_args.max_duration, use_tabular=data_args.data_type=='text_tabular')
+    train_dataset = EHREpisodeDataset(data_args.patient_base_path, train_patient_id_list, tokenizer, data_args.max_text_len, data_args.max_duration, use_tabular=data_args.dataset_type=='text_tabular')
+    valid_dataset = EHREpisodeDataset(data_args.patient_base_path, valid_patient_id_list, tokenizer, data_args.max_text_len, data_args.max_duration, use_tabular=data_args.dataset_type=='text_tabular')
+    test_dataset = EHREpisodeDataset(data_args.patient_base_path, test_patient_id_list, tokenizer, data_args.max_text_len, data_args.max_duration, use_tabular=data_args.dataset_type=='text_tabular')
     
     # Train
     trainer = MultilabelTrainer(
@@ -58,7 +58,8 @@ def main(model_args, data_args, training_args):
         tokenizer=tokenizer
     )
     trainer.train()
-    
+    pred_results = trainer.predict(test_dataset)
+    print(pred_results)    
 
 if __name__ == '__main__':
     parser = HfArgumentParser((ModelArguments, DataTrainingArguments, EHRTrainingArguments))

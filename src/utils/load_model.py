@@ -13,7 +13,7 @@ def load_model_and_tokenizer(model_args, data_args):
         model = model_class.model
         tokenizer = model_class.tokenizer
     elif model_args.model == 'bioelectra':
-        model_class = BioELECTRAModel(model_path = "kamalkraj/bioelectra-base-discriminator-pubmed",
+        model_class = BioELECTRAModel(model_path = "models/bioelectra-base-discriminator-pubmed",
                            num_labels = 1699 + 7 + 2,
                            num_multi_labels = [1699, 7, 2])
         model = model_class.model
@@ -26,7 +26,7 @@ def load_model_and_tokenizer(model_args, data_args):
         model = model_class.model
         tokenizer = model_class.tokenizer
     elif model_args.model == 'longbioelectra':
-        model_class = LongBioELECTRAModel(model_path = "kamalkraj/bioelectra-base-discriminator-pubmed",
+        model_class = LongBioELECTRAModel(model_path = "models/bioelectra-base-discriminator-pubmed",
                                 num_labels = 1699 + 7 + 2,
                                 num_multi_labels = [1699, 7, 2],
                                 attention_window = [512] * 12)

@@ -131,35 +131,35 @@ class EHRTrainingArguments(TrainingArguments):
         default = 'ehr_hadcl_' + datetime.now().strftime('%Y%m%d_%H%M%S.%f')[:-7]+'_',
         metadata = {"help": "experiment path to store models and results"},
     )
-    max_save_num: Optional[int] = field(
-        default=3, 
-        metadata={"help": "the maximum number of models to save"}
-    )
-    patience: Optional[int] = field(
-        default=3, 
-        metadata={"help": "patient epochs before early stopping"}
-    )
-    epochs: Optional[int] = field(
-        default=1, 
-        metadata={"help": "number of training epochs"}
-    )
-    batch_size: Optional[int] = field(
-        default=2, 
-        metadata={"help": "batch size"},
-    )
-    lr: Optional[float] = field(
-        default=1.41e-5, 
-        metadata={"help": "ppo learning rate"},
-    )
-    use_lr_scheduler: Optional[bool] = field(
-        default=False, 
-        metadata={"help": "use scheduler or not"},
-    )
-    fp16: Optional[bool] = field(
-        default=False
-    )
-    optimizer: Optional[str] = field(
-        default="Adam", 
-        metadata={"help": "Choose the optimizer to use. Default Adam.",
-                  "choices": ["Adam", "RecAdam"]}
-    )
+#     max_save_num: Optional[int] = field(
+#         default=3, 
+#         metadata={"help": "the maximum number of models to save"}
+#     )
+#     patience: Optional[int] = field(
+#         default=3, 
+#         metadata={"help": "patient epochs before early stopping"}
+#     )
+#     epochs: Optional[int] = field(
+#         default=1, 
+#         metadata={"help": "number of training epochs"}
+#     )
+#     batch_size: Optional[int] = field(
+#         default=2, 
+#         metadata={"help": "batch size"},
+#     )
+#     lr: Optional[float] = field(
+#         default=1e-5, 
+#         metadata={"help": "ppo learning rate"},
+#     )
+#     use_lr_scheduler: Optional[bool] = field(
+#         default=False, 
+#         metadata={"help": "use scheduler or not"},
+#     )
+#     fp16: Optional[bool] = field(
+#         default=False
+#     )
+#     optimizer: Optional[str] = field(
+#         default="Adam", 
+#         metadata={"help": "Choose the optimizer to use. Default Adam.",
+#                   "choices": ["Adam", "RecAdam"]}
+#     )

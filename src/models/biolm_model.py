@@ -10,10 +10,10 @@ class BioLMModel(nn.Module):
         self.config.num_multi_labels = num_multi_labels
         
         self.tokenizer = RobertaTokenizer.from_pretrained(model_path)
-#         self.model = RobertaForSequenceClassification.from_pretrained(
-#                         model_path,
-#                         config=self.config
-#                      )
+        self.model = RobertaForSequenceClassification.from_pretrained(
+                        model_path,
+                        config=self.config
+                     )
         
     def forward(self, inputs):
         out = self.model(**inputs)

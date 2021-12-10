@@ -39,6 +39,7 @@ class EHREpisodeDataset(Dataset):
         self.tokenizer = tokenizer
         self.max_length = max_length
         self.max_duration = max_duration
+        self.use_tabular = use_tabular
         
     def __getitem__(self, index):
         # Load file
@@ -54,9 +55,9 @@ class EHREpisodeDataset(Dataset):
         ]
         
         # Extract texts, features, & labels
-        next_diags = patient_df['next_diagnosis'].values
-        next_mortals = patient_df['next_mortality'].values
-        next_rel_readmis = EHREpisodeDataset.group_readmission(patient_df['next_relative_readmission'].values)
+        next_diags = patient_df['next_diagnosis'].values[-1]
+        next_mortals = patient_df['next_mortality'].values[-1]
+        next_rel_readmis = EHREpisodeDataset.group_readmission(patient_df['next_relative_readmission'].values[-1])
 
         features = np.stack(patient_df['features'].values)[:,:-1]
         texts = EHREpisodeDataset.construct_patient_text(patient_df, self.tokenizer)
@@ -65,7 +66,9 @@ class EHREpisodeDataset(Dataset):
         # Process texts
         patient_data = self.tokenizer(texts, max_length=self.max_length, return_attention_mask=True, truncation=True)
         patient_data['labels'] = labels
-        patient_data['features'] = features
+        
+        if self.use_tabular:
+            patient_data['features'] = features
         
         return patient_data
         

@@ -3,7 +3,7 @@ from src.models.bioelectra_model import BioELECTRAModel
 from src.models.longmodel import LongBioLMModel, LongBioELECTRAModel
 
 
-def load_model_and_tokenizer(model_args):
+def load_model_and_tokenizer(model_args, data_args):
     if model_args.model == 'scratch':
         pass
     elif model_args.model == 'biolm':

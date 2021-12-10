@@ -48,18 +48,42 @@ class DataTrainingArguments:
                    'or text and tabular data',
             'choices':['text', 'text_tabular', 'short_dataset_1', 'long_mixed_dataset_1']}
     )
-    truncation_clinical_note_len: int = field(
-        default = 999999,
+    patient_base_path: str = field(
+        default = './dataset/preprocess_patient_data',
         metadata = {
-            'help':''}
+            'help':'Patient folder base path'
+        }
     )
-    truncation_duration_from_last_diagnosis: int = field(
-        default = 999999,
+    train_path: str = field(
+        default = './dataset/train_patient_episode_metadata.json',
         metadata = {
-            'help':''}
+            'help':'Train data path'
+        }
+    )
+    valid_path: str = field(
+        default = './dataset/valid_patient_episode_metadata.json',
+        metadata = {
+            'help':'Valid data path'
+        }
+    )
+    test_path: str = field(
+        default = './dataset/test_patient_episode_metadata.json',
+        metadata = {
+            'help':'Test data path'
+        }
+    )
+    max_text_len: int = field(
+        default = 4096,
+        metadata = {
+            'help':'max text length'}
+    )
+    max_duration: int = field(
+        default = 24 * 365 * 10,
+        metadata = {
+            'help':'max duration from last diagnosis in hour'}
     )
     diagnosis_aggregation: str = field(
-        default = 999999,
+        default = 'sum',
         metadata = {
             'help': 'sum , etc'}
     )    

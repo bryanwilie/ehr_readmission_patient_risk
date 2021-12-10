@@ -1,4 +1,8 @@
-## UNTESTED - USE WITH CAUTION
+import numpy as np
+import pandas as pd
+from itertools import chain
+import torch
+from torch.utils.data import Dataset
 
 ###
 # EHR Dataset
@@ -42,7 +46,7 @@ class EHRDataset(Dataset):
 
             last_readmission = patient_df['readmission'].values[-1]
             features = np.stack(patient_df['features'].values)[:,:-1]
-            texts = 
+            texts = None #TODO
         else:
             # Extract texts, features & labels                  
             next_diags = patient_df['next_diagnosis'].values[:-1],
@@ -51,19 +55,19 @@ class EHRDataset(Dataset):
             
             last_readmission = patient_df['readmission'].values[-2]
             features = np.stack(patient_df['features'].values)[:-1,:-1]
-            texts = 
+            texts = None #TODO
         labels = [next_diags, next_rel_readmis, next_mortals]
             
-    # Process texts
-    patient_data = self.tokenizer(texts)
-    patient_data['labels'] = labels
-    patient_data['features'] = features
-    patient_data['input_ids'] = list(chain.from_iterable(patient_data['input_ids']))
-    patient_data['attention_mask'] = list(chain.from_iterable(patient_data['attention_mask']))            
-    if 'token_type_ids' in notes_data:
-        patient_data['token_type_ids'] = [list(chain.from_iterable(patient_data['token_type_ids']))]
+        # Process texts
+        patient_data = self.tokenizer(texts)
+        patient_data['labels'] = labels
+        patient_data['features'] = features
+        patient_data['input_ids'] = list(chain.from_iterable(patient_data['input_ids']))
+        patient_data['attention_mask'] = list(chain.from_iterable(patient_data['attention_mask']))            
+        if 'token_type_ids' in notes_data:
+            patient_data['token_type_ids'] = [list(chain.from_iterable(patient_data['token_type_ids']))]
 
-    return patient_data
+        return patient_data
         
     def __len__(self):
         return len(self.patient_id_list) + len(self.eval_patient_id_list)

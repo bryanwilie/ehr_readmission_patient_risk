@@ -1,6 +1,8 @@
 from transformers import ElectraConfig, RobertaConfig, ElectraTokenizerFast, RobertaTokenizer
 from transformers import LongformerConfig, LongformerForSequenceClassification, LongformerTokenizer
-
+import torch
+from transformers import ElectraConfig, ElectraForSequenceClassification, ElectraTokenizerFast
+import torch.nn as nn
 
 def convert_roberta_like_to_longformer(state_dict, model_name):
     orig_keys = [key for key in state_dict]
@@ -23,10 +25,9 @@ def convert_roberta_like_to_longformer(state_dict, model_name):
             del state_dict[key]
     return state_dict
 
-
-class LongBioLMModel():
+class LongBioLMModel(nn.Module):
     def __init__(self, model_path, num_labels, num_multi_labels, attention_window):
-
+        super().__init__()
         self.config = RobertaConfig.from_pretrained(model_path)
         self.config.num_labels = num_labels
         self.config.num_multi_labels = num_multi_labels
@@ -38,18 +39,15 @@ class LongBioLMModel():
         
         state_dict = convert_roberta_like_to_longformer(self.model.state_dict(), 'roberta')
         self.model.load_state_dict(state_dict, strict = True)
-        
-    def forward(self, inputs, return_tensors='pt'):
-    
-        tokenized_inputs = self.tokenizer(inputs, return_tensors=return_tensors)
-        out = self.model(**tokenized_inputs)
-        
+                
+    def forward(self, inputs):
+        out = self.model(**inputs)
         return out
     
     
-class LongBioELECTRAModel():
+class LongBioELECTRAModel(nn.Module):
     def __init__(self, model_path, num_labels, num_multi_labels, attention_window):
-
+        super().__init__()
         self.config = ElectraConfig.from_pretrained(model_path)
         self.config.num_labels = num_labels
         self.config.num_multi_labels = num_multi_labels
@@ -61,10 +59,7 @@ class LongBioELECTRAModel():
         
         state_dict = convert_roberta_like_to_longformer(self.model.state_dict(), 'electra')
         self.model.load_state_dict(state_dict, strict = True)
-        
-    def forward(self, inputs, return_tensors='pt'):
-    
-        tokenized_inputs = self.tokenizer(inputs, return_tensors=return_tensors)
-        out = self.model(**tokenized_inputs)
-        
+                
+    def forward(self, inputs):
+        out = self.model(**inputs)
         return out

@@ -15,50 +15,44 @@ class EHRDataset(Dataset):
         relative_readmission[relative_readmission > 180] = 6
         return relative_readmission
         
-    def __init__(self, patient_to_path_dict, tokenizer, eval_patient_to_path_dict=None):
-        self.patient_to_path_dict = patient_to_path_dict
-        self.patient_id_list = list(self.patient_to_path_dict.keys())
+    # Arguments:
+    # base_path - base folder path to the patient data
+    # patient_id_list - id list of the patient
+    # tokenizer - tokenizer for tokenizing patient clinical notes
+    # clinical_notes_df - dataframe of clinical notes for all patients
+    # eval_patient_id_list - validation & test patient id list. This is used for 
+    #               filtering out last episode label from the training data
+    def __init__(self, base_path, patient_episode_data, tokenizer, 
+                    clinical_notes_df=None, eval_patient_episode_data=None):
+        self.base_path = base_path
+        self.patient_episode_data = patient_episode_data
         self.tokenizer = tokenizer
-        
-        self.eval_patient_to_path_dict = None
-        self.eval_patient_id_list = []
-        if eval_patient_to_path_dict is not None:
-            self.eval_patient_to_path_dict = eval_patient_to_path_dict
-            self.eval_patient_id_list = list(self.eval_patient_to_path_dict.keys())
-            
+        self.clinical_notes_df = clinical_notes_df 
+        self.eval_patient_episode_data = eval_patient_episode_data
         
     def __getitem__(self, index):
-        if index < len(self.patient_id_list):
-            # Load file
-            patient_id = self.patient_id_list[index]
-            data_path, note_path = self.patient_to_path_dict[patient_id]
-            patient_df = pd.read_pickle(data_path).dropna()
-            notes_df = pd.read_pickle(note_path).dropna()
-            
-            # Extract texts, features, & labels            
+        # Load file
+        patient_id = self.patient_id_list[index]
+        patient_df = pd.read_pickle(f'{self.base_path}/{patient_id}.pkl.gz')
+        if patient_id in self.eval_patient_id_list:
+            # Extract texts, features, & labels
             next_diags = patient_df['next_diagnosis'].values
             next_mortals = patient_df['next_mortality'].values
             next_rel_readmis = self.group_readmission(patient_df['next_relative_readmission'].values)
-            labels = [next_diags, next_rel_readmis, next_mortals]
 
             last_readmission = patient_df['readmission'].values[-1]
             features = np.stack(patient_df['features'].values)[:,:-1]
-            texts = notes_df.loc[notes_df['timestamp'] < patient_df.iloc[-1]['timestamp'],'texts'].values
+            texts = 
         else:
-            # Load file
-            patient_id = self.eval_patient_id_list[index - len(self.patient_id_list)]
-            data_path = self.eval_patient_to_path_dict[patient_id]
-            patient_df = pd.read_pickle(data_path).dropna()
-               
             # Extract texts, features & labels                  
             next_diags = patient_df['next_diagnosis'].values[:-1],
             next_mortals = patient_df['next_mortality'].values[:-1]
             next_rel_readmis = self.group_readmission(patient_df['next_relative_readmission'].values[:-1])
-            labels = [next_diags, next_rel_readmis, next_mortals]
             
             last_readmission = patient_df['readmission'].values[-2]
             features = np.stack(patient_df['features'].values)[:-1,:-1]
-            texts = patient_df.loc[patient_df['readmission'] < last_readmission, 'texts'].values            
+            texts = 
+        labels = [next_diags, next_rel_readmis, next_mortals]
             
     # Process texts
     patient_data = self.tokenizer(texts)

@@ -24,7 +24,7 @@ from transformers import (
 )
 import wandb
 
-from src.data_utils.biodataset import BioDataset
+from src.data_utils import BioDataset, EHRDataset, EHREpisodeDataset
 from src.modules.trainer import MultilabelTrainer
 from src.utils.load_dataset import load_tokenized_dataset
 from src.utils.load_model import load_model_and_tokenizer
